@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <array name="clockTypes">
+        <item>@string/pref_clock_type_no</item>
+        <item>@string/pref_clock_type_pointer</item>
+        <item>@string/pref_clock_type_hour</item>
+        <item>@string/pref_clock_type_min</item>
+    </array>
+
+    <array name="clockTypeAlias">
+        <item>no_clock</item>
+        <item>only_pointers</item>
+        <item>hour_marks</item>
+        <item>min_marks</item>
+    </array>
+    
+    <array name="fractalColorGradient">
+        <item>#FF0000</item>
+        <item>#FFA200</item>
+        <item>#14B300</item>
+        <item>#00A86D</item>
+        <item>#00ECFF</item>
+        <item>#005EFF</item>
+        <item>#D000FF</item>
+    </array>
+
+    <array name="backgroundColorGradient">
+        <item>#290000</item>
+        <item>#221400</item>
+        <item>#062500</item>
+        <item>#001A12</item>
+        <item>#00181A</item>
+        <item>#000E1D</item>
+        <item>#1C0024</item>
+    </array>
+    <string name="pref_clock_type_no">No clock</string>
+    <string name="pref_clock_type_hour">Only Hours Marks</string>
+    <string name="pref_clock_type_min">With Minutes Marks</string>
+    <string name="pref_clock_type_pointer">Only Pointers</string>
+</resources>
