@@ -201,13 +201,9 @@ public class FractalClockRenderer implements GLSurfaceView.Renderer {
     }
     
     public void onDrawFrame(GL10 unused) {
-        long startTime = System.nanoTime();
-    
         /// CLEAR SCREEN
         GLES20.glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.0f);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-    
-        Log.d(TAG, "onDrawFrame: colors: back" + Arrays.toString(backgroundColor) + " clock: " + Arrays.toString(clockColor) );
         
         /// DRAW CLOCK
         if (clockBitmap != null) {
@@ -292,7 +288,6 @@ public class FractalClockRenderer implements GLSurfaceView.Renderer {
             GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, bb);
             int[] pixelsBuffer = new int[screenshotSize];
             bb.asIntBuffer().get(pixelsBuffer);
-            bb = null;
         
             for (int i = 0; i < screenshotSize; ++i) {
                 // The alpha and green channels' positions are preserved while the      red and blue are swapped
@@ -304,16 +299,12 @@ public class FractalClockRenderer implements GLSurfaceView.Renderer {
             
             saveBitmap(bitmap);
         }
-        
-        long timeElapsed = System.nanoTime() - startTime;
-        Log.i(TAG, String.format("onDrawFrame: fractal draw time: %4f ms", (float)timeElapsed / 10e6f));
     }
     
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         screenSize[0] = width;
         screenSize[1] = height;
         GLES20.glViewport(0, 0, width, height);
-        // setScreenSize(width, height);
     }
     
     void setClockSize(float clockSize) {
@@ -363,17 +354,6 @@ public class FractalClockRenderer implements GLSurfaceView.Renderer {
         int texture = gen[0];
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture);
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_ALPHA, image, 0);
-        /*int size =  image.getWidth() * image.getHeight();
-        IntBuffer data = ByteBuffer
-                .allocateDirect(size*8)
-                .order(ByteOrder.nativeOrder())
-                .asIntBuffer();
-        data.put(size, 0xFFFFFFFF);
-        data.position(0);
-        GLES20.glTexImage2D(
-                GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, image.getWidth(), image.getHeight(), 0,
-                GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, data
-        );*/
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);

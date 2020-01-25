@@ -126,9 +126,6 @@ public class FractalClockPreferencesActivity extends AppCompatActivity{
                         if (v<0) {
                             return false;
                         } else if (v < 16){
-                            /*prefs.edit()
-                                    .putString("update_freq", "16")
-                                    .apply();*/
                             newValue = "16";
                         }
                         preference.setSummary(getResources().getString(R.string.pref_update_freq_sum, newValue));
