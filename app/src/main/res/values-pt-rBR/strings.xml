@@ -6,13 +6,11 @@
     <string name="pref_clock_type_min">Com marcas Para os Minutos</string>
     <string name="pref_clock_type_no">Sem relógio</string>
     <string name="pref_clock_type_pointer">Apenas os ponteiros</string>
-    <string name="pref_display_debug">Mostrar Debug Info</string>
     <string name="pref_set_button">Usar este wallpaper</string>
     <string name="pref_update_enabled">Atualizar o Relógio</string>
     <string name="pref_update_freq">Frequência de Atualizações</string>
     <string name="pref_update_freq_sum">Atualizar a cada %1$s milisegundos</string>
     <string name="wallpaper_description">Um papel de parede de um fractal, construido baseado em um relógio mostrando a hora atual</string>
-    <string name="pref_fast_draw">\"Fast\" draw</string>
     <string name="pref_clock_scale">Tamanho</string>
     <string name="pref_fractal_deep">Profundidade do Fractal</string>
     <string name="pref_save_button">Salvar Screenshot</string>

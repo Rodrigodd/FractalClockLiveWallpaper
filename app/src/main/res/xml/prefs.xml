@@ -44,22 +44,10 @@
         xmls:defaultValue="12"
         xmls:key="fractal_deep"
         xmls:title="@string/pref_fractal_deep"
-        xmls:max="20"
+        xmls:max="18"
         app:min="1"
         app:showSeekBarValue="true"
         app:updatesContinuously="true"/>
-
-    <!--
-    <CheckBoxPreference
-        xmls:defaultValue="false"
-        xmls:key="fast_draw"
-        xmls:title="@string/pref_fast_draw" />
-    -->
-
-    <CheckBoxPreference
-        xmls:defaultValue="false"
-        xmls:key="display_debug"
-        xmls:title="@string/pref_display_debug" />
 
     <Preference
         xmls:title="@string/pref_save_button"

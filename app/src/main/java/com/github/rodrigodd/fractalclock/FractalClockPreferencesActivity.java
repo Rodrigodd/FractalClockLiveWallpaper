@@ -8,15 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -28,14 +21,7 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-
-import static android.os.Environment.getExternalStoragePublicDirectory;
 
 public class FractalClockPreferencesActivity extends AppCompatActivity{
     
@@ -59,9 +45,7 @@ public class FractalClockPreferencesActivity extends AppCompatActivity{
         WallpaperManager wpm = (WallpaperManager) getSystemService(WALLPAPER_SERVICE);
         if(wpm != null) {
             WallpaperInfo info = wpm.getWallpaperInfo();
-            if(info != null && info.getComponent().equals(new ComponentName(this,FractalClockWallpaperService.class))){
-                return true;
-            }
+            return info != null && info.getComponent().equals(new ComponentName(this, FractalClockWallpaperService.class));
         }
         return false;
     }
@@ -122,13 +106,31 @@ public class FractalClockPreferencesActivity extends AppCompatActivity{
             
             EditTextPreference updateFreqPreference = findPreference("update_freq");
             if (updateFreqPreference!=null ) {
-                SharedPreferences prefs = updateFreqPreference.getSharedPreferences();
+                final SharedPreferences prefs = updateFreqPreference.getSharedPreferences();
                 updateFreqPreference.setSummary(getResources()
                         .getString(R.string.pref_update_freq_sum,
                                 prefs.getString("update_freq", "1000")));
                 updateFreqPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
                     public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        int v;
+                        if (newValue instanceof String) {
+                            try {
+                                v = Integer.parseInt((String)newValue);
+                            } catch(NumberFormatException e){
+                                return false;
+                            }
+                        } else {
+                            return false;
+                        }
+                        if (v<0) {
+                            return false;
+                        } else if (v < 16){
+                            /*prefs.edit()
+                                    .putString("update_freq", "16")
+                                    .apply();*/
+                            newValue = "16";
+                        }
                         preference.setSummary(getResources().getString(R.string.pref_update_freq_sum, newValue));
                         return true;
                     }

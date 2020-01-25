@@ -3,11 +3,9 @@
     <string name="wallpaper_description">A wallpaper of a fractal, construct based in a clock displaying the current time.</string>
     <string name="pref_update_enabled">Update clock</string>
     <string name="pref_update_freq">Update frequency</string>
-    <string name="pref_display_debug">Display Debug Info</string>
     <string name="pref_update_freq_sum">Update every %1$s milliseconds</string>
     <string name="pref_clock_type">Clock Type</string>
     <string name="pref_set_button">Use this wallpaper</string>
-    <string name="pref_fast_draw">\"Fast\" draw</string>
     <string name="pref_clock_scale">Size</string>
     <string name="pref_fractal_deep">Fractal Deep</string>
     <string name="pref_save_button">Save Screenshot</string>
