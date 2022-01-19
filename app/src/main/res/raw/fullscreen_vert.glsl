@@ -1,8 +1,10 @@
+precision mediump float;
+
 attribute vec4 vertex;
 
 uniform vec2 screenSize;
 
-varying vec2 uv;
+varying mediump vec2 uv;
 
 void main() {
     uv = vertex.zw;

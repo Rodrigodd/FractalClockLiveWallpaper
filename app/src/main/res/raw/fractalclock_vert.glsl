@@ -1,15 +1,16 @@
+#version 100
+
 attribute float vertexIDf;
 uniform vec2 screenSize;
 uniform float clockSize;
 uniform vec2 time;
 
-uniform vec3 hourColor;
-uniform vec3 minColor;
+uniform lowp vec3 hourColor;
+uniform lowp vec3 minColor;
 
-const vec2 positions[2] = vec2[2]( vec2(0.0, 0.0), vec2(0.0, 1.0) );
 const float PI = 3.141592653;
 
-varying vec3 vColor;
+varying lowp vec3 vColor;
 
 void main() {
     int deep = int(log2(floor(vertexIDf/2.0) + 1.0));
