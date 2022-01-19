@@ -34,8 +34,5 @@
         <item>#000E1D</item>
         <item>#1C0024</item>
     </array>
-    <string name="pref_clock_type_no">No clock</string>
-    <string name="pref_clock_type_hour">Only Hours Marks</string>
-    <string name="pref_clock_type_min">With Minutes Marks</string>
-    <string name="pref_clock_type_pointer">Only Pointers</string>
+
 </resources>

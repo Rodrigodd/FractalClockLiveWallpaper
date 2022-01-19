@@ -1,13 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FractalClock</string>
-    <string name="wallpaper_description">A wallpaper of a fractal, construct based in a clock displaying the current time.</string>
+    <string name="pref_clock_scale">Size</string>
+    <string name="pref_clock_type">Clock Type</string>
+    <string name="pref_clock_type_hour">Only Hours Marks</string>
+    <string name="pref_clock_type_min">With Minutes Marks</string>
+    <string name="pref_clock_type_no">No clock</string>
+    <string name="pref_clock_type_pointer">Only Pointers</string>
+    <string name="pref_fractal_deep">Fractal Deep</string>
+    <string name="pref_save_button">Save Screenshot</string>
+    <string name="pref_set_button">Use this wallpaper</string>
     <string name="pref_update_enabled">Update clock</string>
     <string name="pref_update_freq">Update frequency</string>
     <string name="pref_update_freq_sum">Update every %1$s milliseconds</string>
-    <string name="pref_clock_type">Clock Type</string>
-    <string name="pref_set_button">Use this wallpaper</string>
-    <string name="pref_clock_scale">Size</string>
-    <string name="pref_fractal_deep">Fractal Deep</string>
-    <string name="pref_save_button">Save Screenshot</string>
     <string name="toast_saved_wallpaper">Saved in Pictures Folder</string>
+    <string name="wallpaper_description">A wallpaper of a fractal, construct based in a clock displaying the current time.</string>
 </resources>
