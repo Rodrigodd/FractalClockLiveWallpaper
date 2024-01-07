@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.rarepebble.colorpicker.ColorPreference
+        android:defaultValue="#ff0000"
+        android:key="background_color"
+        android:title="@string/pref_background_color"
+        app:colorpicker_showAlpha="false" />
+
+    <com.rarepebble.colorpicker.ColorPreference
+        android:defaultValue="#00ff00"
+        android:key="min_clock_color"
+        android:title="@string/pref_min_color"
+        app:colorpicker_showAlpha="true" />
+
+    <com.rarepebble.colorpicker.ColorPreference
+        android:defaultValue="#0000ff"
+        android:key="hour_clock_color"
+        android:title="@string/pref_hour_color"
+        app:colorpicker_showAlpha="true" />
+
+    <com.rarepebble.colorpicker.ColorPreference
+        android:defaultValue="#ff00ff"
+        android:key="clock_clock_color"
+        android:title="@string/pref_clock_color"
+        app:colorpicker_showAlpha="true" />
+
+</androidx.preference.PreferenceScreen>

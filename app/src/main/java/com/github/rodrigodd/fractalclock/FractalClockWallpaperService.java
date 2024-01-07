@@ -44,19 +44,14 @@ public class FractalClockWallpaperService extends WallpaperService {
         private int screenHeight = -1;
         
         private ColorGradient fractalColorGradient;
+        private ColorGradient minColorGradient;
+        private ColorGradient hourColorGradient;
+        private ColorGradient clockColorGradient;
         private ColorGradient backgroundColorGradient;
         
         private FractalClockDrawer fractalClockDrawer;
         
         private FractalClockRenderer fractalClockRenderer;
-        private WallpaperGLSurfaceView glSurfaceView;
-        
-        private final Runnable drawRunner = new Runnable() {
-            @Override
-            public void run() {
-                draw();
-            }
-        };
         SharedPreferences.OnSharedPreferenceChangeListener updatePrefs = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
@@ -66,78 +61,117 @@ public class FractalClockWallpaperService extends WallpaperService {
                 }
                 
                 if (key == null) {
-                    update = prefs.getBoolean("update_enabled", false);
-                    updateDelay = (long) (Integer.valueOf(prefs.getString("update_freq", "1000")));
-                    if (updateDelay < 16) {
-                        updateDelay  = 16;
-                        prefs.edit()
-                                .putString("update_freq", "16")
-                                .apply();
-                    }
-                    switch (prefs.getString("clock_type", "")) {
-                        case "no_clock":
-                            displayClock = false;
-                            break;
-                        case "only_pointers":
-                            displayClock = true;
-                            clockType = 0;
-                            break;
-                        default:
-                        case "hour_marks":
-                            displayClock = true;
-                            clockType = 1;
-                            break;
-                        case "min_marks":
-                            displayClock = true;
-                            clockType = 2;
-                            break;
-                    }
-                    clockScale = prefs.getInt("clock_scale", 20);
-                    updateDimensions();
-                    fractalDeep = prefs.getInt("fractal_deep", 12);
+                    setUpdateEnabled(prefs);
+                    setUpdateFrequency(prefs);
+                    setClockType(prefs);
+                    setBackgroundColor(prefs);
+                    setMinPointerColor(prefs);
+                    setHourPointerColor(prefs);
+                    setClockColor(prefs);
+                    setClockScale(prefs);
+                    setFractalDeep(prefs);
                 } else switch (key) {
                     case "update_enabled":
-                        update = prefs.getBoolean("update_enabled", false);
+                        setUpdateEnabled(prefs);
                         break;
                     case "update_freq":
-                        updateDelay = (long) (Integer.valueOf(prefs.getString("update_freq", "1000")));
-                        if (updateDelay < 16) {
-                            updateDelay  = 16;
-                            prefs.edit()
-                                    .putString("update_freq", "16")
-                                    .apply();
-                        }
+                        setUpdateFrequency(prefs);
                         break;
                     case "clock_type":
-                        switch (prefs.getString("clock_type", "")) {
-                            case "no_clock":
-                                displayClock = false;
-                                break;
-                            case "only_pointers":
-                                displayClock = true;
-                                clockType = 0;
-                                break;
-                            default:
-                            case "hour_marks":
-                                displayClock = true;
-                                clockType = 1;
-                                break;
-                            case "min_marks":
-                                displayClock = true;
-                                clockType = 2;
-                                break;
-                        }
+                        setClockType(prefs);
                         fractalClockDrawer.updateClockTexture();
                         break;
+                    case "background_color":
+                        setBackgroundColor(prefs);
+                        break;
+                    case "min_clock_color":
+                        setMinPointerColor(prefs);
+                        break;
+                    case "hour_clock_color":
+                        setHourPointerColor(prefs);
+                        break;
+                    case "clock_clock_color":
+                        setClockColor(prefs);
+                        break;
                     case "clock_scale":
-                        clockScale = prefs.getInt("clock_scale", 20);
-                        updateDimensions();
+                        setClockScale(prefs);
                         break;
                     case "fractal_deep":
-                        fractalDeep = prefs.getInt("fractal_deep", 12);
+                        setFractalDeep(prefs);
                         break;
                 }
                 handler.post(drawRunner);
+            }
+            
+            private void setUpdateEnabled(SharedPreferences prefs) {
+                update = prefs.getBoolean("update_enabled", false);
+            }
+            
+            private void setUpdateFrequency(SharedPreferences prefs) {
+                updateDelay = (long) (Integer.valueOf(prefs.getString("update_freq", "1000")));
+                if (updateDelay < 16) {
+                    updateDelay = 16;
+                    prefs.edit()
+                            .putString("update_freq", "16")
+                            .apply();
+                }
+            }
+            
+            private void setClockType(SharedPreferences prefs) {
+                switch (prefs.getString("clock_type", "")) {
+                    case "no_clock":
+                        displayClock = false;
+                        break;
+                    case "only_pointers":
+                        displayClock = true;
+                        clockType = 0;
+                        break;
+                    default:
+                    case "hour_marks":
+                        displayClock = true;
+                        clockType = 1;
+                        break;
+                    case "min_marks":
+                        displayClock = true;
+                        clockType = 2;
+                        break;
+                }
+            }
+            
+            private void setBackgroundColor(SharedPreferences prefs) {
+                int color = prefs.getInt("background_color", 0xff000000);
+                backgroundColorGradient.setColors(new int[]{color});
+            }
+    
+            private void setMinPointerColor(SharedPreferences prefs) {
+                int color = prefs.getInt("min_clock_color", 0xff000000);
+                minColorGradient.setColors(new int[]{color});
+            }
+    
+            private void setHourPointerColor(SharedPreferences prefs) {
+                int color = prefs.getInt("hour_clock_color", 0xff000000);
+                hourColorGradient.setColors(new int[]{color});
+            }
+    
+            private void setClockColor(SharedPreferences prefs) {
+                int color = prefs.getInt("clock_clock_color", 0xff000000);
+                clockColorGradient.setColors(new int[]{color});
+            }
+            
+            private void setClockScale(SharedPreferences prefs) {
+                clockScale = prefs.getInt("clock_scale", 20);
+                updateDimensions();
+            }
+            
+            private void setFractalDeep(SharedPreferences prefs) {
+                fractalDeep = prefs.getInt("fractal_deep", 12);
+            }
+        };
+        private WallpaperGLSurfaceView glSurfaceView;
+        private final Runnable drawRunner = new Runnable() {
+            @Override
+            public void run() {
+                draw();
             }
         };
         
@@ -146,8 +180,11 @@ public class FractalClockWallpaperService extends WallpaperService {
                     .getDefaultSharedPreferences(FractalClockWallpaperService.this);
             prefs.registerOnSharedPreferenceChangeListener(updatePrefs);
             
-            fractalColorGradient = new ColorGradient(R.array.fractalColorGradient, getResources());
-            backgroundColorGradient = new ColorGradient(R.array.backgroundColorGradient, getResources());
+            fractalColorGradient = new ColorGradient(getResources().getIntArray(R.array.fractalColorGradient));
+            minColorGradient = new ColorGradient(new int[]{ 0 });
+            hourColorGradient = new ColorGradient(new int[]{ 0 });
+            clockColorGradient = new ColorGradient(new int[]{ 0 });
+            backgroundColorGradient = new ColorGradient(getResources().getIntArray(R.array.backgroundColorGradient));
             
             fractalClockDrawer = new FractalClockDrawer();
             
@@ -172,7 +209,7 @@ public class FractalClockWallpaperService extends WallpaperService {
                             EGLConfig[] configs = new EGLConfig[1];
                             int[] configCounts = new int[1];
                             egl10.eglChooseConfig(eglDisplay, attribs, configs, 1, configCounts);
-                    
+                            
                             if (configCounts[0] == 0) {
                                 // Failed! Error handling.
                                 return null;
@@ -184,7 +221,7 @@ public class FractalClockWallpaperService extends WallpaperService {
             fractalClockRenderer = new FractalClockRenderer(FractalClockWallpaperService.this);
             glSurfaceView.setRenderer(fractalClockRenderer);
             glSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-    
+            
             updatePrefs.onSharedPreferenceChanged(prefs, null);
             
             draw();
@@ -267,28 +304,28 @@ public class FractalClockWallpaperService extends WallpaperService {
                 today00.set(Calendar.MINUTE, 0);
                 today00.set(Calendar.SECOND, 0);
                 today00.set(Calendar.MILLISECOND, 0);
-    
+                
                 final long today00Milliseconds = today00.getTimeInMillis();
                 final long timeMilliseconds = Calendar.getInstance().getTimeInMillis();
                 long daytimeMilliseconds = timeMilliseconds - today00Milliseconds;
                 final int msph = 1000 * 60 * 60;
-    
+                
                 float timeMin = ((float) (daytimeMilliseconds % (msph))) / ((float) msph);
                 float timeHour = ((float) (daytimeMilliseconds % (12 * msph))) / ((float) (12 * msph));
-    
+                
                 final int h20 = 20 * 60 * 60 * 1000;
                 float abrtTime = ((float) (timeMilliseconds % (h20))) / h20;
-    
+                
                 final ColorGradient grad = fractalColorGradient;
-                fractalClockRenderer.setHourPointerColor(grad.getColor(abrtTime));
-                fractalClockRenderer.setMinPointerColor(grad.getColor(abrtTime + 0.1f));
-                fractalClockRenderer.setClockColor(grad.getColor(abrtTime - 0.1f));
-    
+                fractalClockRenderer.setHourPointerColor(hourColorGradient.getColor(abrtTime));
+                fractalClockRenderer.setMinPointerColor(minColorGradient.getColor(abrtTime));
+                fractalClockRenderer.setClockColor(clockColorGradient.getColor(abrtTime));
+                
                 //fractalClockRenderer.setScreenSize(screenWidth, screenHeight);
                 fractalClockRenderer.setDeep(fractalDeep);
-    
+                
                 fractalClockRenderer.setBackgroundColor(backgroundColorGradient.getColor(abrtTime));
-    
+                
                 fractalClockRenderer.setTime(timeHour, timeMin);
                 
                 glSurfaceView.requestRender();
@@ -329,7 +366,7 @@ public class FractalClockWallpaperService extends WallpaperService {
             private final Paint clockHourMarkPaint = new Paint();
             private final Paint clockMinMarkPaint = new Paint();
             private float clockSize;
-    
+            
             FractalClockDrawer() {
                 clockHourMarkPaint.setAntiAlias(true);
                 clockHourMarkPaint.setColor(Color.WHITE);

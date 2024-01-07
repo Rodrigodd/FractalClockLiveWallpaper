@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FractalClock</string>
+    <string name="pref_background_color">Cor de Fundo</string>
+    <string name="pref_min_color">Cor do Ponteiro de Minutos</string>
+    <string name="pref_hour_color">Cor do Ponteiro de Minutos</string>
+    <string name="pref_clock_color">Cor do Relogio</string>
     <string name="pref_clock_scale">Tamanho</string>
     <string name="pref_clock_type">Tipo de Relogio</string>
     <string name="pref_clock_type_hour">Apenas marcas das horas</string>

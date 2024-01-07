@@ -8,15 +8,19 @@ import androidx.annotation.ArrayRes;
 import androidx.annotation.ColorInt;
 
 public class ColorGradient {
-    private int[] colors;
+    private @ColorInt int[] colors;
     private float[] keys;
     
-    ColorGradient(@ArrayRes int arrayColorRes, Resources res){
-        colors = res.getIntArray(arrayColorRes);
+    ColorGradient(@ColorInt int[] colors){
+        this.colors = colors;
         keys = new float[colors.length+1];
         for(int i = 0;i<colors.length+1;i++){
             keys[i] = (float) i/(colors.length+1);
         }
+    }
+    
+    void setColors(@ColorInt int[] colors)  {
+        this.colors =  colors;
     }
     
     @ColorInt

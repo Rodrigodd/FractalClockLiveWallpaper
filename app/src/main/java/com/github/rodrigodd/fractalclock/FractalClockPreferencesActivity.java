@@ -1,6 +1,7 @@
 package com.github.rodrigodd.fractalclock;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
@@ -10,31 +11,40 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.preference.EditTextPreference;
+import androidx.preference.EditTextPreference.OnBindEditTextListener;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.rarepebble.colorpicker.ColorPreference;
+import com.rarepebble.colorpicker.ColorPreferenceFragment;
+
 import java.util.Calendar;
 
-public class FractalClockPreferencesActivity extends AppCompatActivity{
+public class FractalClockPreferencesActivity extends AppCompatActivity {
     
     
     protected boolean isAlreadySet;
     private ColorGradient backgroundColorGradient;
     
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prefs);
     
-        backgroundColorGradient = new ColorGradient(R.array.backgroundColorGradient,getResources());
+        backgroundColorGradient = new ColorGradient(getResources().getIntArray(R.array.backgroundColorGradient));
         
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content, new FractalClockPreferenceFragment())
@@ -43,7 +53,7 @@ public class FractalClockPreferencesActivity extends AppCompatActivity{
     
     private boolean checkWallpaperIsSet() {
         WallpaperManager wpm = (WallpaperManager) getSystemService(WALLPAPER_SERVICE);
-        if(wpm != null) {
+        if (wpm != null) {
             WallpaperInfo info = wpm.getWallpaperInfo();
             return info != null && info.getComponent().equals(new ComponentName(this, FractalClockWallpaperService.class));
         }
@@ -53,25 +63,24 @@ public class FractalClockPreferencesActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
-    
+        
         isAlreadySet = checkWallpaperIsSet();
         
         FrameLayout layout = findViewById(R.id.content);
         
-        if(isAlreadySet){
+        if (isAlreadySet) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER, WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
             layout.setBackgroundColor(Color.TRANSPARENT);
-        }
-        else{
+        } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
-            final int h20 = 20*60*60*1000;
+            final int h20 = 20 * 60 * 60 * 1000;
             final long timeMilliseconds = Calendar.getInstance().getTimeInMillis();
-            float abrtTime = ( (float) (timeMilliseconds%(h20)) )/h20;
+            float abrtTime = ((float) (timeMilliseconds % (h20))) / h20;
             layout.setBackgroundColor(backgroundColorGradient.getColor(abrtTime));
         }
     }
     
-    protected void wallpaperIntent(){
+    protected void wallpaperIntent() {
         Intent intent = new Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
         intent.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
                 new ComponentName(this, FractalClockWallpaperService.class));
@@ -91,8 +100,8 @@ public class FractalClockPreferencesActivity extends AppCompatActivity{
     }
     
     static public class FractalClockPreferenceFragment extends PreferenceFragmentCompat {
-    
-    
+        
+        
         private Preference setWallpaperButton;
         private Preference saveWallpaperButton;
         private FractalClockPreferencesActivity activity;
@@ -104,8 +113,25 @@ public class FractalClockPreferencesActivity extends AppCompatActivity{
             
             addPreferencesFromResource(R.xml.prefs);
             
-            EditTextPreference updateFreqPreference = findPreference("update_freq");
-            if (updateFreqPreference!=null ) {
+            final EditTextPreference updateFreqPreference = findPreference("update_freq");
+            if (updateFreqPreference != null) {
+                updateFreqPreference.setOnBindEditTextListener(new OnBindEditTextListener() {
+                    @Override
+                    public void onBindEditText(@NonNull final EditText editText) {
+                        editText.setSingleLine();
+                        editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                            @Override
+                            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                                if (actionId == EditorInfo.IME_ACTION_DONE){
+                                    updateFreqPreference.setText(editText.getText().toString());
+                                    return true;
+                                }
+                                return false;
+                            }
+                        });
+                    }
+                });
                 final SharedPreferences prefs = updateFreqPreference.getSharedPreferences();
                 updateFreqPreference.setSummary(getResources()
                         .getString(R.string.pref_update_freq_sum,
@@ -116,16 +142,16 @@ public class FractalClockPreferencesActivity extends AppCompatActivity{
                         int v;
                         if (newValue instanceof String) {
                             try {
-                                v = Integer.parseInt((String)newValue);
-                            } catch(NumberFormatException e){
+                                v = Integer.parseInt((String) newValue);
+                            } catch (NumberFormatException e) {
                                 return false;
                             }
                         } else {
                             return false;
                         }
-                        if (v<0) {
+                        if (v < 0) {
                             return false;
-                        } else if (v < 16){
+                        } else if (v < 16) {
                             newValue = "16";
                         }
                         preference.setSummary(getResources().getString(R.string.pref_update_freq_sum, newValue));
@@ -135,7 +161,7 @@ public class FractalClockPreferencesActivity extends AppCompatActivity{
             }
             
             setWallpaperButton = findPreference("set_wallpaper_button");
-            if (setWallpaperButton!=null) {
+            if (setWallpaperButton != null) {
                 if (!activity.isAlreadySet) {
                     setWallpaperButton.setVisible(true);
                     setWallpaperButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -149,9 +175,9 @@ public class FractalClockPreferencesActivity extends AppCompatActivity{
                     setWallpaperButton.setVisible(false);
                 }
             }
-    
+            
             saveWallpaperButton = findPreference("save_wallpaper_button");
-            if (saveWallpaperButton!=null) {
+            if (saveWallpaperButton != null) {
                 if (!activity.isAlreadySet) {
                     saveWallpaperButton.setEnabled(true);
                     saveWallpaperButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -169,7 +195,7 @@ public class FractalClockPreferencesActivity extends AppCompatActivity{
                                 Context context = activity.getApplicationContext();
                                 CharSequence text = activity.getResources().getText(R.string.toast_saved_wallpaper);
                                 int duration = Toast.LENGTH_LONG;
-    
+                                
                                 Toast toast = Toast.makeText(context, text, duration);
                                 toast.show();
                                 
@@ -182,14 +208,42 @@ public class FractalClockPreferencesActivity extends AppCompatActivity{
                 }
             }
         }
-    
+        
+        @Override
+        public void onDisplayPreferenceDialog(Preference preference) {
+            if (preference instanceof ColorPreference) {
+                ColorPreference dialog = (ColorPreference) preference;
+                dialog.showDialog(this, 0);
+            } else super.onDisplayPreferenceDialog(preference);
+        }
+        
         @Override
         public void onResume() {
             super.onResume();
-            if (setWallpaperButton == null) setWallpaperButton = findPreference("set_wallpaper_button");
+            if (setWallpaperButton == null)
+                setWallpaperButton = findPreference("set_wallpaper_button");
             if (setWallpaperButton != null) setWallpaperButton.setVisible(!activity.isAlreadySet);
-            if (saveWallpaperButton == null) saveWallpaperButton = findPreference("save_wallpaper_button");
+            if (saveWallpaperButton == null)
+                saveWallpaperButton = findPreference("save_wallpaper_button");
             if (saveWallpaperButton != null) saveWallpaperButton.setEnabled(activity.isAlreadySet);
         }
+        
+    }
+    
+    static public class FractalClockColorPreferenceFragment extends PreferenceFragmentCompat {
+    
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            addPreferencesFromResource(R.xml.color_prefs);
+        }
+    
+        @Override
+        public void onDisplayPreferenceDialog(Preference preference) {
+            if (preference instanceof ColorPreference) {
+                ColorPreference dialog = (ColorPreference) preference;
+                dialog.showDialog(this, 0);
+            } else super.onDisplayPreferenceDialog(preference);
+        }
+    
     }
 }

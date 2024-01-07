@@ -1,56 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen
-    xmlns:xmls="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <Preference
-        xmls:title="@string/pref_set_button"
-        xmls:key="set_wallpaper_button"/>
-
+        android:key="set_wallpaper_button"
+        android:title="@string/pref_set_button" />
 
     <CheckBoxPreference
-        xmls:defaultValue="true"
-        xmls:key="update_enabled"
-        xmls:title="@string/pref_update_enabled" />
+        android:defaultValue="true"
+        android:key="update_enabled"
+        android:title="@string/pref_update_enabled" />
 
     <EditTextPreference
-        xmls:dependency="update_enabled"
-        xmls:visibility="visible"
-        xmls:digits="0123456789"
-        xmls:inputType="number"
-        xmls:key="update_freq"
-        xmls:defaultValue="1000"
-        xmls:title="@string/pref_update_freq"
-        xmls:summary="@string/pref_update_freq_sum"/>
+        android:defaultValue="1000"
+        android:dependency="update_enabled"
+        android:digits="0123456789"
+        android:inputType="number"
+        android:key="update_freq"
+        android:summary="@string/pref_update_freq_sum"
+        android:title="@string/pref_update_freq"
+        android:visibility="visible"/>
 
     <ListPreference
-        xmls:defaultValue="hour_marks"
-        xmls:entries="@array/clockTypes"
-        xmls:entryValues="@array/clockTypeAlias"
-        xmls:key="clock_type"
-        xmls:title="@string/pref_clock_type"
-        xmls:summary="%1$s"/>
-
-    <SeekBarPreference
-        xmls:defaultValue="20"
-        xmls:key="clock_scale"
-        xmls:title="@string/pref_clock_scale"
-        xmls:max="40"
-        app:showSeekBarValue="false"
-        app:updatesContinuously="true"/>
-
-    <SeekBarPreference
-        xmls:defaultValue="12"
-        xmls:key="fractal_deep"
-        xmls:title="@string/pref_fractal_deep"
-        xmls:max="18"
-        app:min="1"
-        app:showSeekBarValue="true"
-        app:updatesContinuously="true"/>
+        android:defaultValue="hour_marks"
+        android:entries="@array/clockTypes"
+        android:entryValues="@array/clockTypeAlias"
+        android:key="clock_type"
+        android:summary="%1$s"
+        android:title="@string/pref_clock_type" />
 
     <Preference
-        xmls:title="@string/pref_save_button"
-        xmls:key="save_wallpaper_button"/>
+        android:title="Color Preferences"
+        app:fragment="com.github.rodrigodd.fractalclock.FractalClockPreferencesActivity$FractalClockColorPreferenceFragment" />
+
+    <SeekBarPreference
+        android:defaultValue="20"
+        android:key="clock_scale"
+        android:max="40"
+        android:title="@string/pref_clock_scale"
+        app:showSeekBarValue="false"
+        app:updatesContinuously="true" />
+
+    <SeekBarPreference
+        android:defaultValue="12"
+        android:key="fractal_deep"
+        android:max="18"
+        android:title="@string/pref_fractal_deep"
+        app:min="1"
+        app:showSeekBarValue="true"
+        app:updatesContinuously="true" />
+
+    <Preference
+        android:key="save_wallpaper_button"
+        android:title="@string/pref_save_button" />
 
 </androidx.preference.PreferenceScreen>

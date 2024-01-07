@@ -13,7 +13,6 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -27,7 +26,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -52,8 +50,11 @@ public class FractalClockRenderer implements GLSurfaceView.Renderer {
     private int fractalProgram;
     
     private int vertexIDBuffer;
+    // For a deep of 19, there are 2^20 - 1 branches. Ignoring the root and two more branches, there are
+    // 2^20 - 4 branches.
     private final int MAX_SIZE = (1 << 20) - 4;
-    private int size = (1 << 16) - 3;
+    private int maxDeep = 16;
+    private int size = (1 << maxDeep) - 3;
     
     private final float[] screenSize = { 1.0f, 1.0f };
     private float clockSize = 0.5f;
@@ -102,10 +103,12 @@ public class FractalClockRenderer implements GLSurfaceView.Renderer {
         {
             vertexIDBuffer = gen[0];
         
-            ByteBuffer bb = ByteBuffer.allocateDirect(2 * MAX_SIZE * 4);
+            // There is MAX_SIZE branches, each with 2 vertices, each with 4 bytes
+            ByteBuffer bb = ByteBuffer.allocateDirect(MAX_SIZE * 2 * 4);
             bb.order(ByteOrder.nativeOrder());
             IntBuffer vertexBuffer = bb.asIntBuffer();
             for (int i = 0; i < 2 * MAX_SIZE; i++) {
+                // The first 3 branches are ignored, so vertices starts at index 6.
                 vertexBuffer.put(i + 6);
             }
             vertexBuffer.position(0);
@@ -266,6 +269,9 @@ public class FractalClockRenderer implements GLSurfaceView.Renderer {
             int timeHandle = GLES20.glGetUniformLocation(fractalProgram, "time");
             GLES20.glUniform2fv(timeHandle, 1, time, 0);
     
+            int maxDeepHandle = GLES20.glGetUniformLocation(fractalProgram, "maxDeep");
+            GLES20.glUniform1i(maxDeepHandle, maxDeep);
+    
             int hourColorHandle = GLES20.glGetUniformLocation(fractalProgram, "hourColor");
             GLES20.glUniform3fv(hourColorHandle, 1, hourPointerColor, 0);
     
@@ -390,6 +396,7 @@ public class FractalClockRenderer implements GLSurfaceView.Renderer {
     }
     
     void setDeep(int deep) {
+        maxDeep = deep;
         if (deep == 0) {
             size = 0;
         } else {
@@ -457,7 +464,7 @@ public class FractalClockRenderer implements GLSurfaceView.Renderer {
                 if (source != null) {
                     OutputStream imageOut = cr.openOutputStream(url);
                     try {
-                        source.compress(Bitmap.CompressFormat.JPEG, 98, imageOut);
+                        source.compress(Bitmap.CompressFormat.PNG, 98, imageOut);
                     } finally {
                         imageOut.close();
                     }
